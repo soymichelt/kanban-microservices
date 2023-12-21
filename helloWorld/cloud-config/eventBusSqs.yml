@@ -1,0 +1,25 @@
+Resources:
+  EventBusSqsHelloWorldQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      ContentBasedDeduplication: true
+      ReceiveMessageWaitTimeSeconds: 1
+      DelaySeconds: 0
+      VisibilityTimeout: 60
+      FifoQueue: true
+  EventBusSqsHelloWorldQueuePolicy:
+    Type: AWS::SQS::QueuePolicy
+    Properties:
+      Queues:
+        - !Ref EventBusSqsHelloWorldQueue
+      PolicyDocument:
+        Id: EventBusSqsHelloWorldQueuePolicyId
+        Version: '2012-10-17'
+        Statement:
+        - Sid: EventBusSqsHelloWorldQueuePolicySidSelf
+          Effect: Allow
+          Principal:
+            AWS: arn:aws:iam::${self:custom.environment.AWS_ACCOUNT_ID}:root
+          Action:
+            - SQS:SendMessage
+          Resource: !Ref EventBusSqsHelloWorldQueue

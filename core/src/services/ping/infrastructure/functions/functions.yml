@@ -1,0 +1,8 @@
+ping-get:
+  handler: src/services/ping/infrastructure/functions/http/get/handler.handler
+  environment:
+    SNS_TOPIC_ARN: !Ref EventBusSnsCoreTopic
+  events:
+    - httpApi:
+        method: GET
+        path: /core/ping

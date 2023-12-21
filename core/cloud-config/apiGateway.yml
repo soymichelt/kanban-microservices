@@ -1,0 +1,61 @@
+Resources:
+  CoreApiGatewayV2:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      Name: CoreApi
+      ProtocolType: HTTP
+      Description: API Gateway to all services
+      CorsConfiguration:
+        AllowOrigins:
+          - '*'
+        AllowMethods:
+          - '*'
+
+  CoreApiGatewayV2StageV1:
+    Type: AWS::ApiGatewayV2::Stage
+    Properties:
+      ApiId: !Ref CoreApiGatewayV2
+      StageName: v1
+      AutoDeploy: true
+      AccessLogSettings:
+        DestinationArn:
+          Fn::GetAtt: [CoreApiGatewayV2LogGroup, Arn]
+        Format: '{"requestId":"$context.requestId","ip":"$context.identity.sourceIp","caller":"$context.identity.caller","user":"$context.identity.user","requestTime":"$context.requestTime","httpMethod":"$context.httpMethod","resourcePath":"$context.resourcePath","status":"$context.status","protocol":"$context.protocol","responseLength":"$context.responseLength","errorMessage":"$context.error.message", "errorAuthorizer": "$context.authorizer.error", "errorIntegration": "$context.integration.error"}'
+
+  CoreApiGatewayV2LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Join
+        - '/'
+        - - '/aws/apiGateway'
+          - !Ref CoreApiGatewayV2
+          - 'access-logs'
+
+  CoreApiGatewayV2Authorizer:
+    Type: AWS::ApiGatewayV2::Authorizer
+    Properties:
+      Name: CoreApiRequestAuthorizer
+      ApiId: !Ref CoreApiGatewayV2
+      AuthorizerType: REQUEST
+      AuthorizerPayloadFormatVersion: '2.0'
+      AuthorizerResultTtlInSeconds: 300
+      EnableSimpleResponses: false
+      AuthorizerUri:
+        Fn::Sub: 'arn:aws:apigateway:${self:custom.constants.REGION}:lambda:path/2015-03-31/functions/${self:custom.environment.HELLO_WORLD.AUTH_LAMBDA_REQUEST_AUTHORIZER}/invocations'
+      IdentitySource:
+        - '$request.header.x-user-id'
+        - '$request.header.x-auth-token'
+      AuthorizerCredentialsArn:
+        Fn::GetAtt: [IamCoreLambdaAuthorizerInvokeRole, Arn]
+
+Outputs:
+  CoreApiGatewayV2Id:
+    Value:
+      Fn::GetAtt: [CoreApiGatewayV2, ApiId]
+    Export:
+      Name: ${self:service}-CoreApiGatewayV2-ApiId
+  CoreApiGatewayV2AuthorizerId:
+    Value:
+      Ref: CoreApiGatewayV2Authorizer
+    Export:
+      Name: ${self:service}-${self:provider.stage}-CoreApiGatewayV2Authorizer-AuthorizerId

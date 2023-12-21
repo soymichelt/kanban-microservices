@@ -1,0 +1,29 @@
+Resources:
+  HelloWorldDeploymentPolicies:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Description: Políticas y permisos, del servicio hello-world, necesarios para los sistemas de CI / CD
+      Groups:
+        - ${cf:core-${self:provider.stage}.CIIAMGroupName}
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          # NOTA: Es necesario realizar un proceso de revisión
+          # de cada uno de los permisos habilitados en esta sección.
+          # De tal forma que solo estén activadas aquellas estrictamente
+          # necesarias y requeridas por el CI.
+          - Effect: Allow
+            Action:
+              - cloudformation:*
+              - iam:*
+              - apigateway:*
+              - cloudwatch:*
+              - logs:*
+              - lambda:*
+              - s3:*
+              - events:*
+              - sns:*
+              - sqs:*
+              - ssm:*
+              - kms:*
+            Resource: '*'

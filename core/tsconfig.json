@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "lib": ["ES2020", "ES2021", "ES2022"],
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "removeComments": true,
+    "moduleResolution": "node",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitAny": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "sourceMap": true,
+    "target": "ES2020",
+    "outDir": "lib",
+    "baseUrl": "./",
+    "types": ["jest", "node", "reflect-metadata"],
+    "paths": {
+      "@di/*": ["src/di/*"],
+      "@services/*": ["src/services/*"],
+      "@shared/*": ["src/shared/*"],
+      "@tests/*": ["tests/*"]
+    },
+    "typeRoots": [
+      "./types",
+      "./node_modules/@types",
+      "./node_modules/reflect-metadata",
+    ]
+  },
+  "include": [
+    ".eslintrc.js",
+    "src/**/*",
+    "tests/**/*.ts"
+  ]
+}

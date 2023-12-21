@@ -1,0 +1,8 @@
+user-authorizer:
+  role: IamHelloWorldLambdaAccessRole
+  handler: src/services/auth/infrastructure/functions/http/verify/handler.handler
+  environment:
+    SNS_TOPIC_ARN: !Ref EventBusSnsHelloWorldTopic
+    MONGO_DATABASE_URI: ${ssm:/hello-world/databases/MONGO_URI}
+    MONGO_DATABASE_NAME: ${ssm:/hello-world/databases/MONGO_NAME}
+

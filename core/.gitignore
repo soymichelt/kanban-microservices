@@ -1,0 +1,19 @@
+/node_modules
+
+# package directories
+jspm_packages
+coverage
+
+# Serverless directories
+sls-output
+.dynamodb
+.serverless
+.s3
+stage-artifacts
+_es-logs
+.esbuild
+
+# Webpack directories
+.webpack
+
+.npmrc

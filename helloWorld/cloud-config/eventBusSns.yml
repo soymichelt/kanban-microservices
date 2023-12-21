@@ -1,0 +1,40 @@
+Resources:
+  EventBusSnsHelloWorldTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: ${self:custom.constants.HELLO_WORLD.SNS_TOPIC}
+  EventBusSnsHelloWorldTopicPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      Topics:
+        - !Ref EventBusSnsHelloWorldTopic
+      PolicyDocument:
+        Id: EventBusSnsHelloWorldTopicPolicyId
+        Version: '2012-10-17'
+        Statement:
+        - Sid: EventBusSnsHelloWorldTopicPolicySidSelf
+          Effect: Allow
+          Principal:
+            AWS: arn:aws:iam::${self:custom.environment.AWS_ACCOUNT_ID}:root
+          Action:
+            - SNS:GetTopicAttributes
+            - SNS:SetTopicAttributes
+            - SNS:AddPermission
+            - SNS:RemovePermission
+            - SNS:DeleteTopic
+            - SNS:Subscribe
+            - SNS:ListSubscriptionsByTopic
+            - SNS:Publish
+            - SNS:Receive
+          Resource: !Ref EventBusSnsHelloWorldTopic
+
+Outputs:
+  EventBusSnsHelloWorldTopicArn:
+    Value:
+      Ref: EventBusSnsHelloWorldTopic
+    Export:
+      Name: EventBusSnsHelloWorldTopicArn
+  EventBusSnsHelloWorldTopicName:
+    Value:  ${self:custom.constants.HELLO_WORLD.SNS_TOPIC}
+    Export:
+      Name: EventBusSnsHelloWorldTopicName
