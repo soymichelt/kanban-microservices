@@ -9,8 +9,9 @@ import { TaskState } from '@services/tasks/domain/valueObjects/taskState';
 import { EventBus } from '@shared/domain/events/eventBus';
 import { UseCase } from '@shared/domain/useCases/useCase';
 import { UserId } from '@shared/domain/valueObjects/userId';
-import { inject } from 'tsyringe';
+import { inject, injectable } from 'tsyringe';
 
+@injectable()
 export class CreateTaskUseCase extends UseCase<CreateTaskRequest, TaskResponse> {
   constructor(
     @inject('TaskRepository') private repository: TaskRepository,
