@@ -1,8 +1,7 @@
 import { container } from '@di/services/tasks';
 import middy from '@middy/core';
+import { CreateTaskController } from '@services/tasks/infrastructure/functions/http/create/controller';
 import { APIGatewayProxyEventV2, Context } from 'aws-lambda';
-
-import { CreateTaskController } from './controller';
 
 const invokeController = async function (event: APIGatewayProxyEventV2, context: Context) {
   const controller = container.resolve<CreateTaskController>('CreateTaskController');
