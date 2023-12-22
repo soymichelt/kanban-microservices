@@ -1,0 +1,40 @@
+Resources:
+  EventBusSnsTasksTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: ${self:custom.constants.TASKS.SNS_TOPIC}
+  EventBusSnsTasksTopicPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      Topics:
+        - !Ref EventBusSnsTasksTopic
+      PolicyDocument:
+        Id: EventBusSnsTasksTopicPolicyId
+        Version: '2012-10-17'
+        Statement:
+        - Sid: EventBusSnsTasksTopicPolicySidSelf
+          Effect: Allow
+          Principal:
+            AWS: arn:aws:iam::${self:custom.environment.AWS_ACCOUNT_ID}:root
+          Action:
+            - SNS:GetTopicAttributes
+            - SNS:SetTopicAttributes
+            - SNS:AddPermission
+            - SNS:RemovePermission
+            - SNS:DeleteTopic
+            - SNS:Subscribe
+            - SNS:ListSubscriptionsByTopic
+            - SNS:Publish
+            - SNS:Receive
+          Resource: !Ref EventBusSnsTasksTopic
+
+Outputs:
+  EventBusSnsTasksTopicArn:
+    Value:
+      Ref: EventBusSnsTasksTopic
+    Export:
+      Name: EventBusSnsTasksTopicArn
+  EventBusSnsTasksTopicName:
+    Value:  ${self:custom.constants.TASKS.SNS_TOPIC}
+    Export:
+      Name: EventBusSnsTasksTopicName

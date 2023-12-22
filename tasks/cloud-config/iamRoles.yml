@@ -1,0 +1,34 @@
+Resources:
+  IamTasksLambdaAccessRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: IamTasksLambdaAccessRolePolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - SNS:Publish
+                Resource:
+                  Ref: EventBusSnsTasksTopic
+              - Effect: 'Allow'
+                Action:
+                  - ssm:GetParameters
+                Resource:
+                - arn:aws:ssm:${self:custom.constants.REGION}:${self:custom.environment.AWS_ACCOUNT_ID}:parameter/deployment/tasks/*
+              - Effect: Allow
+                Action:
+                  - ses:SendEmail
+                Resource: '*'
