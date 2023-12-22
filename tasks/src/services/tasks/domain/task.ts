@@ -1,4 +1,5 @@
 import { TaskCreatedEvent } from '@services/tasks/domain/events/taskCreatedEvent';
+import { TaskStateUpdatedEvent } from '@services/tasks/domain/events/taskStateUpdatedEvent';
 import { TaskAuthor } from '@services/tasks/domain/valueObjects/taskAuthor';
 import { TaskDescription } from '@services/tasks/domain/valueObjects/taskDescription';
 import { TaskId } from '@services/tasks/domain/valueObjects/taskId';
@@ -32,21 +33,26 @@ export type TaskPrimitives = {
 export class Task extends AggregateRoot {
   readonly taskId: TaskId;
   readonly description: TaskDescription;
-  readonly state: TaskState;
   readonly author: TaskAuthor;
   readonly userId: UserId;
+
+  private _state: TaskState;
 
   private constructor(props: TaskProps) {
     super();
 
     this.taskId = props.taskId;
     this.description = props.description;
-    this.state = props.state;
+    this._state = props.state;
     this.author = props.author;
     this.userId = props.userId;
 
     this.createdAt = props.createdAt ?? DateValueObject.now();
     this.updatedAt = props.updatedAt ?? DateValueObject.now();
+  }
+
+  public get state(): TaskState {
+    return this._state;
   }
 
   public static build(props: TaskProps): Task {
@@ -73,11 +79,19 @@ export class Task extends AggregateRoot {
     });
   }
 
+  public updateState(state: TaskState): void {
+    this._state = state;
+    this.updatedAt = DateValueObject.now();
+
+    const event = TaskStateUpdatedEvent.build(this);
+    this.pushEvent(event);
+  }
+
   public toPrimitives(): TaskPrimitives {
     return {
       taskId: this.taskId.toString(),
       description: this.description.value,
-      state: this.state.value,
+      state: this._state.value,
       author: this.author.value,
       userId: this.userId.toString(),
 
