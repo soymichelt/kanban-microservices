@@ -6,7 +6,6 @@ type TaskStateUpdatedEventPrimitives = BaseEventPrimitivesProps & {
   taskId: string;
   description: string;
   state: number;
-  author: string;
   userId: string;
   createdAt: string;
   updatedAt: string;
@@ -42,7 +41,6 @@ export class TaskStateUpdatedEvent extends DomainEvent {
       taskId: taskPrimitives.taskId,
       description: taskPrimitives.description,
       state: taskPrimitives.state,
-      author: taskPrimitives.author,
       createdAt: taskPrimitives.createdAt,
       updatedAt: taskPrimitives.updatedAt,
     };

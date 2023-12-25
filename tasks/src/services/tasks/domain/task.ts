@@ -1,6 +1,5 @@
 import { TaskCreatedEvent } from '@services/tasks/domain/events/taskCreatedEvent';
 import { TaskStateUpdatedEvent } from '@services/tasks/domain/events/taskStateUpdatedEvent';
-import { TaskAuthor } from '@services/tasks/domain/valueObjects/taskAuthor';
 import { TaskDescription } from '@services/tasks/domain/valueObjects/taskDescription';
 import { TaskId } from '@services/tasks/domain/valueObjects/taskId';
 import { TaskState } from '@services/tasks/domain/valueObjects/taskState';
@@ -12,7 +11,6 @@ export type TaskProps = {
   taskId: TaskId;
   description: TaskDescription;
   state: TaskState;
-  author: TaskAuthor;
   userId: UserId;
 
   createdAt?: DateValueObject;
@@ -23,7 +21,6 @@ export type TaskPrimitives = {
   taskId: string;
   description: string;
   state: number;
-  author: string;
   userId: string;
 
   createdAt: string;
@@ -33,7 +30,6 @@ export type TaskPrimitives = {
 export class Task extends AggregateRoot {
   readonly taskId: TaskId;
   readonly description: TaskDescription;
-  readonly author: TaskAuthor;
   readonly userId: UserId;
 
   private _state: TaskState;
@@ -44,7 +40,6 @@ export class Task extends AggregateRoot {
     this.taskId = props.taskId;
     this.description = props.description;
     this._state = props.state;
-    this.author = props.author;
     this.userId = props.userId;
 
     this.createdAt = props.createdAt ?? DateValueObject.now();
@@ -71,7 +66,6 @@ export class Task extends AggregateRoot {
       taskId: TaskId.fromString(props.taskId),
       description: TaskDescription.build(props.description),
       state: TaskState.build(props.state),
-      author: TaskAuthor.build(props.author),
       userId: UserId.fromString(props.userId),
 
       createdAt: DateValueObject.fromString(props.createdAt),
@@ -92,7 +86,6 @@ export class Task extends AggregateRoot {
       taskId: this.taskId.toString(),
       description: this.description.value,
       state: this._state.value,
-      author: this.author.value,
       userId: this.userId.toString(),
 
       createdAt: this.createdAt.toString(),

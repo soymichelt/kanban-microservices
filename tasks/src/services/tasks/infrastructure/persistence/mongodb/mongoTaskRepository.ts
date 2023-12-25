@@ -42,7 +42,6 @@ export class MongoTaskRepository extends MongoRepository<Task> implements TaskRe
       taskId: document.taskId,
       description: document.description,
       state: Number(document.state),
-      author: document.author,
       userId: document.userId,
       createdAt: document.createdAt,
       updatedAt: document.updatedAt,
