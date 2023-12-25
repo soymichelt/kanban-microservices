@@ -1,18 +1,18 @@
 Resources:
-  EventBusSnsHelloWorldTopic:
+  EventBusSnsAccountTopic:
     Type: AWS::SNS::Topic
     Properties:
-      TopicName: ${self:custom.constants.HELLO_WORLD.SNS_TOPIC}
-  EventBusSnsHelloWorldTopicPolicy:
+      TopicName: ${self:custom.constants.ACCOUNT.SNS_TOPIC}
+  EventBusSnsAccountTopicPolicy:
     Type: AWS::SNS::TopicPolicy
     Properties:
       Topics:
-        - !Ref EventBusSnsHelloWorldTopic
+        - !Ref EventBusSnsAccountTopic
       PolicyDocument:
-        Id: EventBusSnsHelloWorldTopicPolicyId
+        Id: EventBusSnsAccountTopicPolicyId
         Version: '2012-10-17'
         Statement:
-        - Sid: EventBusSnsHelloWorldTopicPolicySidSelf
+        - Sid: EventBusSnsAccountTopicPolicySidSelf
           Effect: Allow
           Principal:
             AWS: arn:aws:iam::${self:custom.environment.AWS_ACCOUNT_ID}:root
@@ -26,15 +26,15 @@ Resources:
             - SNS:ListSubscriptionsByTopic
             - SNS:Publish
             - SNS:Receive
-          Resource: !Ref EventBusSnsHelloWorldTopic
+          Resource: !Ref EventBusSnsAccountTopic
 
 Outputs:
-  EventBusSnsHelloWorldTopicArn:
+  EventBusSnsAccountTopicArn:
     Value:
-      Ref: EventBusSnsHelloWorldTopic
+      Ref: EventBusSnsAccountTopic
     Export:
-      Name: EventBusSnsHelloWorldTopicArn
-  EventBusSnsHelloWorldTopicName:
-    Value:  ${self:custom.constants.HELLO_WORLD.SNS_TOPIC}
+      Name: EventBusSnsAccountTopicArn
+  EventBusSnsAccountTopicName:
+    Value:  ${self:custom.constants.ACCOUNT.SNS_TOPIC}
     Export:
-      Name: EventBusSnsHelloWorldTopicName
+      Name: EventBusSnsAccountTopicName

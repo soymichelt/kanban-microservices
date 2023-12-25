@@ -1,5 +1,5 @@
 app: soymichel-dev
-service: hello-world
+service: account
 
 package:
   individually: true
@@ -68,5 +68,4 @@ resources:
   - ${file(cloud-config/iamPolicies.yml)}
   - ${file(cloud-config/iamRoles.yml)}
   - ${file(cloud-config/eventBusSns.yml)}
-  - ${file(cloud-config/eventBusSqs.yml)}
   - ${file(cloud-config/s3.yml)}

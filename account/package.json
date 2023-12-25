@@ -1,7 +1,7 @@
 {
-  "name": "hello-world",
+  "name": "account",
   "version": "1.0.0",
-  "description": "Microservice template to working with serverless",
+  "description": "Account microservice",
   "scripts": {
     "lint": "eslint --color ./src/**/*.ts && tsc --noEmit",
     "lint:fix": "eslint --color ./src/**/*.ts --fix",

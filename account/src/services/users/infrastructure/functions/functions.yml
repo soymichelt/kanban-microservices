@@ -1,0 +1,64 @@
+user-create:
+  role: IamAccountLambdaAccessRole
+  handler: src/services/users/infrastructure/functions/http/create/handler.handler
+  environment:
+    SNS_TOPIC_ARN: !Ref EventBusSnsAccountTopic
+    MONGO_DATABASE_URI: ${ssm:/account/databases/MONGO_URI}
+    MONGO_DATABASE_NAME: ${ssm:/account/databases/MONGO_NAME}
+    CRYPTO_SECRET_KEY: ${ssm:/account/crypto/SECRET_KEY}
+    CRYPTO_SECRET_IV: ${ssm:/account/crypto/SECRET_IV}
+  events:
+    - httpApi:
+        method: POST
+        path: /account/users
+
+user-notify-registered:
+  role: IamAccountLambdaAccessRole
+  handler: src/services/users/infrastructure/functions/sns/notifRegistered/handler.handler
+  environment:
+    MONGO_DATABASE_URI: ${ssm:/account/databases/MONGO_URI}
+    MONGO_DATABASE_NAME: ${ssm:/account/databases/MONGO_NAME}
+    SES_EMAIL_FROM: ${ssm:/account/mailing/SES/SES_EMAIL_FROM}
+  events:
+    - sns:
+        arn: !Ref EventBusSnsAccountTopic
+        topicName: ${self:custom.constants.ACCOUNT.SNS_TOPIC}
+        filterPolicy:
+          event_type:
+            - 'soymichel-dev.account.v1.user.created'
+
+user-get-all:
+  role: IamAccountLambdaAccessRole
+  handler: src/services/users/infrastructure/functions/http/getAll/handler.handler
+  environment:
+    MONGO_DATABASE_URI: ${ssm:/account/databases/MONGO_URI}
+    MONGO_DATABASE_NAME: ${ssm:/account/databases/MONGO_NAME}
+  events:
+    - httpApi:
+        method: GET
+        path: /account/users
+
+user-remove:
+  role: IamAccountLambdaAccessRole
+  handler: src/services/users/infrastructure/functions/http/remove/handler.handler
+  environment:
+    SNS_TOPIC_ARN: !Ref EventBusSnsAccountTopic
+    MONGO_DATABASE_URI: ${ssm:/account/databases/MONGO_URI}
+    MONGO_DATABASE_NAME: ${ssm:/account/databases/MONGO_NAME}
+  events:
+    - httpApi:
+        method: DELETE
+        path: /account/users/{userId}
+
+user-notify-removed:
+  role: IamAccountLambdaAccessRole
+  handler: src/services/users/infrastructure/functions/sns/notifRemoved/handler.handler
+  environment:
+    SES_EMAIL_FROM: ${ssm:/account/mailing/SES/SES_EMAIL_FROM}
+  events:
+    - sns:
+        arn: !Ref EventBusSnsAccountTopic
+        topicName: ${self:custom.constants.ACCOUNT.SNS_TOPIC}
+        filterPolicy:
+          event_type:
+            - 'soymichel-dev.account.v1.user.removed'

@@ -1,5 +1,5 @@
 Resources:
-  S3HelloWorldStorage:
+  S3AccountStorage:
     Type: AWS::S3::Bucket
     DeletionPolicy: Retain
     Properties:
@@ -25,13 +25,13 @@ Resources:
             MaxAge: 3600
 
 Outputs:
-  S3HelloWorldStorageName:
+  S3AccountStorageName:
     Value:
-      Ref: S3HelloWorldStorage
+      Ref: S3AccountStorage
     Export:
-      Name: S3HelloWorldStorageName
-  S3HelloWorldStorageArn:
+      Name: S3AccountStorageName
+  S3AccountStorageArn:
     Value:
-      Fn::GetAtt: [S3HelloWorldStorage, Arn]
+      Fn::GetAtt: [S3AccountStorage, Arn]
     Export:
-      Name: S3HelloWorldStorageArn
+      Name: S3AccountStorageArn

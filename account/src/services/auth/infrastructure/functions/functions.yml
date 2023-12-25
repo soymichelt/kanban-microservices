@@ -1,0 +1,7 @@
+user-authorizer:
+  role: IamAccountLambdaAccessRole
+  handler: src/services/auth/infrastructure/functions/http/verify/handler.handler
+  environment:
+    SNS_TOPIC_ARN: !Ref EventBusSnsAccountTopic
+    MONGO_DATABASE_URI: ${ssm:/account/databases/MONGO_URI}
+    MONGO_DATABASE_NAME: ${ssm:/account/databases/MONGO_NAME}

@@ -1,8 +1,8 @@
 Resources:
-  HelloWorldDeploymentPolicies:
+  AccountDeploymentPolicies:
     Type: AWS::IAM::ManagedPolicy
     Properties:
-      Description: Políticas y permisos, del servicio hello-world, necesarios para los sistemas de CI / CD
+      Description: Políticas y permisos, del servicio account, necesarios para los sistemas de CI / CD
       Groups:
         - ${cf:core-${self:provider.stage}.CIIAMGroupName}
       PolicyDocument:

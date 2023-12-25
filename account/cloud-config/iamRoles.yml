@@ -1,5 +1,5 @@
 Resources:
-  IamHelloWorldLambdaAccessRole:
+  IamAccountLambdaAccessRole:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
@@ -14,7 +14,7 @@ Resources:
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
       Policies:
-        - PolicyName: IamHelloWorldLambdaAccessRolePolicy
+        - PolicyName: IamAccountLambdaAccessRolePolicy
           PolicyDocument:
             Version: '2012-10-17'
             Statement:
@@ -22,12 +22,12 @@ Resources:
                 Action:
                   - SNS:Publish
                 Resource:
-                  Ref: EventBusSnsHelloWorldTopic
+                  Ref: EventBusSnsAccountTopic
               - Effect: 'Allow'
                 Action:
                   - ssm:GetParameters
                 Resource:
-                - arn:aws:ssm:${self:custom.constants.REGION}:${self:custom.environment.AWS_ACCOUNT_ID}:parameter/deployment/helloWorld/*
+                - arn:aws:ssm:${self:custom.constants.REGION}:${self:custom.environment.AWS_ACCOUNT_ID}:parameter/deployment/account/*
               - Effect: 'Allow'
                 Action:
                   - s3:DeleteObject
@@ -36,13 +36,8 @@ Resources:
                 Resource:
                   - Fn::Join:
                       - ''
-                      - - Fn::GetAtt: [S3HelloWorldStorage, Arn]
+                      - - Fn::GetAtt: [S3AccountStorage, Arn]
                         - '/*'
-              - Effect: 'Allow'
-                Action:
-                  - sqs:SendMessage
-                Resource:
-                  - Fn::GetAtt: [EventBusSqsHelloWorldQueue, Arn]
               - Effect: Allow
                 Action:
                   - ses:SendEmail
