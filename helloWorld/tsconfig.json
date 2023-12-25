@@ -29,6 +29,7 @@
   },
   "include": [
     ".eslintrc.js",
+    "jest.config.ts",
     "src/**/*.ts",
     "tests/**/*.ts",
   ]
