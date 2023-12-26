@@ -62,6 +62,7 @@ provider:
 functions:
   - ${file(src/services/ping/infrastructure/functions/functions.yml)}
   - ${file(src/services/tasks/infrastructure/functions/functions.yml)}
+  - ${file(src/services/users/infrastructure/functions/functions.yml)}
 
 resources:
   - ${file(cloud-config/iamPolicies.yml)}

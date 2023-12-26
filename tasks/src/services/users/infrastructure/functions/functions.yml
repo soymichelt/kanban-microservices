@@ -1,0 +1,13 @@
+user-update:
+  role: IamTasksLambdaAccessRole
+  handler:  src/services/users/infrastructure/functions/sns/update/handler.handler
+  environment:
+    MONGO_DATABASE_URI: ${ssm:/tasks/databases/MONGO_URI}
+    MONGO_DATABASE_NAME: ${ssm:/tasks/databases/MONGO_NAME}
+  events:
+    - sns:
+        arn: ${cf:account-${self:provider.stage}.EventBusSnsAccountTopicArn}
+        topicName: ${self:custom.constants.ACCOUNT.SNS_TOPIC}
+        filterPolicy:
+          event_type:
+            - 'soymichel-dev.account.v1.user.created'
