@@ -7,6 +7,8 @@ export const ERROR_CODES = {
   EncryptException: 'SHA-1005',
   DecryptUnknownException: 'SHA-1006',
   UnauthorizedException: 'SHA-1006',
-  // USR-200*: Task module error codes
-  TaskNotFoundException: 'TSK-1001',
+  // TSK-200*: Task module error codes
+  TaskNotFoundException: 'TSK-2001',
+  // USR-300*: User module error codes
+  UserNotFoundException: 'TSK-3001',
 };

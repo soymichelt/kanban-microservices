@@ -5,6 +5,8 @@ import { Task, TaskPrimitives } from '@services/tasks/domain/task';
 import { TaskDescription } from '@services/tasks/domain/valueObjects/taskDescription';
 import { TaskId } from '@services/tasks/domain/valueObjects/taskId';
 import { TaskState } from '@services/tasks/domain/valueObjects/taskState';
+import { UserNotFoundException } from '@services/users/domain/exceptions/userNotFoundException';
+import { UserRepository } from '@services/users/domain/repositories/userRepository';
 import { EventBus } from '@shared/domain/events/eventBus';
 import { UseCase } from '@shared/domain/useCases/useCase';
 import { UserId } from '@shared/domain/valueObjects/userId';
@@ -14,17 +16,24 @@ import { inject, injectable } from 'tsyringe';
 export class CreateTaskUseCase extends UseCase<CreateTaskRequest, TaskResponse> {
   constructor(
     @inject('TaskRepository') private repository: TaskRepository,
+    @inject('UserRepository') private userRepository: UserRepository,
     @inject('EventBus') private eventBus: EventBus,
   ) {
     super();
   }
 
   public async run(request: CreateTaskRequest): Promise<TaskPrimitives> {
+    const userId = UserId.fromString(request.userId);
+    const userExist = await this.userRepository.find(userId);
+    if (!userExist) {
+      throw new UserNotFoundException(request.userId);
+    }
+
     const task = Task.create({
       taskId: TaskId.newId(),
       description: TaskDescription.build(request.description),
       state: TaskState.build(request.state),
-      userId: UserId.fromString(request.userId),
+      userId,
     });
 
     await this.repository.update(task);

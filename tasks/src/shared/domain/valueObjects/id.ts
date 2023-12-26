@@ -25,6 +25,10 @@ export class Id {
     return new Id(objectId);
   }
 
+  public equals(other: Id): boolean {
+    return this.value.toString() === other.value?.toString();
+  }
+
   public toString(): string {
     return this.value?.toString();
   }
