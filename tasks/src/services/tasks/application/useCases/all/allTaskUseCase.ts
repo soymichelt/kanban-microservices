@@ -15,7 +15,7 @@ export class AllTasksUseCase extends UseCase<void, UserTaskResponse[]> {
 
   public async run(): Promise<UserTaskResponse[]> {
     const tasks = await this.repository.all();
-    if (tasks.length) {
+    if (!tasks.length) {
       return [];
     }
 
@@ -26,7 +26,7 @@ export class AllTasksUseCase extends UseCase<void, UserTaskResponse[]> {
       const user = users.find(({ userId }) => userId.equals(task.userId));
       return {
         ...task.toPrimitives(),
-        username: user?.username.value,
+        assignedTo: user?.username.value,
       };
     });
   }
