@@ -7,9 +7,12 @@ import { AllTasksController } from '@services/tasks/infrastructure/functions/htt
 import { CreateTaskController } from '@services/tasks/infrastructure/functions/http/create/controller';
 import { UpdateTaskStateController } from '@services/tasks/infrastructure/functions/http/updateState/controller';
 import { MongoTaskRepository } from '@services/tasks/infrastructure/persistence/mongodb/mongoTaskRepository';
+import { UserRepository } from '@services/users/domain/repositories/userRepository';
+import { MongoUserRepository } from '@services/users/infrastructure/persistence/mongodb/MongoUserRepository';
 
 container
   .register<TaskRepository>('TaskRepository', MongoTaskRepository)
+  .register<UserRepository>('UserRepository', MongoUserRepository)
   .register<CreateTaskUseCase>('CreateTaskUseCase', CreateTaskUseCase)
   .register<CreateTaskController>('CreateTaskController', CreateTaskController)
   .register<AllTasksUseCase>('AllTasksUseCase', AllTasksUseCase)
