@@ -34,6 +34,10 @@ export class MongoUserRepository extends MongoRepository<User> implements UserRe
     await this.persist(user.userId, user);
   }
 
+  public async delete(userId: UserId): Promise<void> {
+    await super.delete(userId);
+  }
+
   private mapToUser(document: any): User {
     return User.fromPrimitives({
       userId: document.userId,

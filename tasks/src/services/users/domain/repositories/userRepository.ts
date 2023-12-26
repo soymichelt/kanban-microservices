@@ -6,4 +6,5 @@ export interface UserRepository {
   find(userId: UserId): Promise<User>;
   findByUsername(username: UserName): Promise<User>;
   update(user: User): Promise<void>;
+  delete(userId: UserId): Promise<void>;
 }
