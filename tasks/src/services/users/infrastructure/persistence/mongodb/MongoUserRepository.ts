@@ -22,6 +22,14 @@ export class MongoUserRepository extends MongoRepository<User> implements UserRe
     return this.mapToUser(document);
   }
 
+  public async findByIds(userIds: UserId[]): Promise<User[]> {
+    const collection = await this.collection();
+    const documents = await collection.find({ _id: { $in: userIds.map((userId) => userId.value) } }).toArray();
+    if (!documents) return;
+
+    return documents.map((document) => this.mapToUser(document));
+  }
+
   public async findByUsername(username: UserName): Promise<User> {
     const collection = await this.collection();
     const document = await collection.findOne({ username: username.value });
