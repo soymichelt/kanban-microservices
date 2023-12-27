@@ -64,8 +64,8 @@ if (process.env.MONGO_DATABASE_URI && process.env.MONGO_DATABASE_NAME) {
 if (process.env.CRYPTO_SECRET_KEY && process.env.CRYPTO_SECRET_IV) {
   container.register<EncriptionService>('EncriptionService', {
     useValue: new CryptoEncriptionService({
-      secretKey: String(process.env.CRYPTO_SECRET_KEY),
-      secretIV: String(process.env.CRYPTO_SECRET_IV),
+      secretKey: String(process.env.CRYPTO_SECRET_KEY?.toString()),
+      secretIV: String(process.env.CRYPTO_SECRET_IV?.toString()),
     }),
   });
 }

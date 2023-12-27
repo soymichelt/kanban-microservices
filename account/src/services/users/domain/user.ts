@@ -1,5 +1,6 @@
 import { UserCreatedEvent } from '@services/users/domain/events/userCreatedEvent';
 import { UserRemovedEvent } from '@services/users/domain/events/userRemovedEvent';
+import { UserSignedEvent } from '@services/users/domain/events/userSignedEvent';
 import { UserEmail } from '@services/users/domain/valueObjects/userEmail';
 import { UserName } from '@services/users/domain/valueObjects/userName';
 import { UserPassword } from '@services/users/domain/valueObjects/userPassword';
@@ -33,7 +34,7 @@ export class User extends AggregateRoot {
   readonly userId: Id;
   private username: UserName;
   private email: UserEmail;
-  private password: UserPassword;
+  private _password: UserPassword;
   private phone?: UserPhone;
 
   private constructor(props: UserProps) {
@@ -42,11 +43,15 @@ export class User extends AggregateRoot {
     this.userId = props.userId;
     this.username = props.username;
     this.email = props.email;
-    this.password = props.password;
+    this._password = props.password;
     this.phone = props.phone;
 
     this.createdAt = props.createdAt ?? DateValueObject.now();
     this.updatedAt = props.updatedAt ?? DateValueObject.now();
+  }
+
+  public get password(): UserPassword {
+    return this._password;
   }
 
   public static build(props: UserProps): User {
@@ -79,12 +84,17 @@ export class User extends AggregateRoot {
     this.pushEvent(event);
   }
 
+  public signin(): void {
+    const event = UserSignedEvent.build(this);
+    this.pushEvent(event);
+  }
+
   public toPrimitives(): UserPrimitivesProps {
     return {
       userId: this.userId.toString(),
       username: this.username.value,
       email: this.email.value,
-      password: this.password.value,
+      password: this._password.value,
       phone: this.phone?.value,
 
       createdAt: this.createdAt.toString(),

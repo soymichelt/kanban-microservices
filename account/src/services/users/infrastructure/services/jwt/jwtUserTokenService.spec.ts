@@ -50,7 +50,7 @@ describe('Tests JwtUserTokenService', () => {
   test('Testing decode', async () => {
     const jwtService = new JwtUserTokenService({ privateKey: PRIVATE_KEY });
     const token = await jwtService.encode(PAYLOAD);
-    const payloadFromTokenDecoded = await jwtService.decode(token);
+    const payloadFromTokenDecoded = await jwtService.verifyAndDecode(token);
     expect(payloadFromTokenDecoded).toEqual(PAYLOAD);
   });
 });

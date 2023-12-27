@@ -62,3 +62,18 @@ user-notify-removed:
         filterPolicy:
           event_type:
             - 'soymichel-dev.account.v1.user.removed'
+
+user-signin:
+  role: IamAccountLambdaAccessRole
+  handler: src/services/users/infrastructure/functions/http/signin/handler.handler
+  environment:
+    SNS_TOPIC_ARN: !Ref EventBusSnsAccountTopic
+    MONGO_DATABASE_URI: ${ssm:/account/databases/MONGO_URI}
+    MONGO_DATABASE_NAME: ${ssm:/account/databases/MONGO_NAME}
+    CRYPTO_SECRET_KEY: ${ssm:/account/crypto/SECRET_KEY}
+    CRYPTO_SECRET_IV: ${ssm:/account/crypto/SECRET_IV}
+    JWT_PRIVATE_KEY: ${ssm:/account/jwt/PRIVATE_KEY}
+  events:
+    - httpApi:
+        method: POST
+        path: /account/users/signin

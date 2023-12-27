@@ -46,7 +46,7 @@ export class JwtUserTokenService implements UserTokenService {
     return promise;
   }
 
-  public async decode(token: string): Promise<UserPayloadProps> {
+  public async verifyAndDecode(token: string): Promise<UserPayloadProps> {
     const promise = new Promise<UserPayloadProps>((resolve, reject) => {
       jwt.verify(token, this.privateKey, (error: Error, result: any) => {
         if (error) {

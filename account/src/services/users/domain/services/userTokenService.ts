@@ -10,5 +10,5 @@ export type UserPayloadProps = {
 
 export interface UserTokenService {
   encode(user: UserPayloadProps): Promise<string>;
-  decode(token: string): Promise<UserPayloadProps>;
+  verifyAndDecode(token: string): Promise<UserPayloadProps>;
 }
