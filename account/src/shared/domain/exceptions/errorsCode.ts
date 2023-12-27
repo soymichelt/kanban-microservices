@@ -10,4 +10,7 @@ export const ERROR_CODES = {
   // USR-200*: Users module error codes
   UserEmailAlreadyExistException: 'USR-1001',
   UserNameAlreadyExistException: 'USR-1002',
+  UserCredentialsAreInvalidException: 'USR-1003',
+  UserTokenEncodeException: 'USR-1004',
+  UserTokenDecodeException: 'USR-1005',
 };
