@@ -6,6 +6,8 @@ Resources:
       ProtocolType: HTTP
       Description: API Gateway to all services
       CorsConfiguration:
+        AllowHeaders:
+          - '*'
         AllowOrigins:
           - '*'
         AllowMethods:
@@ -41,8 +43,9 @@ Resources:
       AuthorizerResultTtlInSeconds: 300
       EnableSimpleResponses: false
       AuthorizerUri:
-        Fn::Sub: 'arn:aws:apigateway:${self:custom.constants.REGION}:lambda:path/2015-03-31/functions/${self:custom.environment.HELLO_WORLD.AUTH_LAMBDA_REQUEST_AUTHORIZER}/invocations'
+        Fn::Sub: 'arn:aws:apigateway:${self:custom.constants.REGION}:lambda:path/2015-03-31/functions/${self:custom.environment.ACCOUNT.AUTH_LAMBDA_REQUEST_AUTHORIZER}/invocations'
       IdentitySource:
+        - '$request.header.Authorization'
         - '$request.header.x-user-id'
         - '$request.header.x-auth-token'
       AuthorizerCredentialsArn:
