@@ -1,9 +1,10 @@
-import { UserResponse } from '@services/users/application/responses/userResponse';
-import { CreateUserRequest } from '@services/users/application/useCases/create/createUserRequest';
+import { UserAuthenticatedResponse } from '@services/users/application/responses/userAuthenticatedResponse';
+import { SignupUserRequest } from '@services/users/application/useCases/signup/singupUserRequest';
 import { UserEmailAlreadyExistException } from '@services/users/domain/exceptions/userEmailAlreadyExistException';
 import { UserNameAlreadyExistException } from '@services/users/domain/exceptions/userNameAlreadyExistException';
 import { UserRepository } from '@services/users/domain/repositories/userRepository';
-import { User } from '@services/users/domain/user';
+import { UserTokenService } from '@services/users/domain/services/userTokenService';
+import { User, UserPrimitivesProps } from '@services/users/domain/user';
 import { UserEmail } from '@services/users/domain/valueObjects/userEmail';
 import { UserName } from '@services/users/domain/valueObjects/userName';
 import { UserPassword } from '@services/users/domain/valueObjects/userPassword';
@@ -15,16 +16,17 @@ import { Id } from '@shared/domain/valueObjects/id';
 import { inject, injectable } from 'tsyringe';
 
 @injectable()
-export class CreateUserUseCase extends UseCase<CreateUserRequest, UserResponse> {
+export class SingupUserUseCase extends UseCase<SignupUserRequest, UserAuthenticatedResponse> {
   constructor(
-    @inject('EventBus') private eventBus: EventBus,
     @inject('UserRepository') private repository: UserRepository,
     @inject('EncriptionService') private encriptionService: EncriptionService,
+    @inject('UserTokenService') private tokenService: UserTokenService,
+    @inject('EventBus') private eventBus: EventBus,
   ) {
     super();
   }
 
-  public async run(request: CreateUserRequest): Promise<UserResponse> {
+  public async run(request: SignupUserRequest): Promise<UserAuthenticatedResponse> {
     const email = UserEmail.build(request.email);
     await this.verifyIfEmailExist(email);
 
@@ -40,12 +42,11 @@ export class CreateUserUseCase extends UseCase<CreateUserRequest, UserResponse> 
       phone: UserPhone.build(request.phone),
     });
 
+    const token = await this.tokenService.encode(this.getUserPayload(user));
+
     await this.repository.update(user);
     await this.eventBus.publish(user.pullEvents());
-
-    const result = user.toPrimitives();
-    delete result.password;
-    return { ...result };
+    return { token };
   }
 
   private async verifyIfEmailExist(email: UserEmail): Promise<void> {
@@ -60,5 +61,11 @@ export class CreateUserUseCase extends UseCase<CreateUserRequest, UserResponse> 
     if (userWithTheSameEmail) {
       throw new UserNameAlreadyExistException(username);
     }
+  }
+
+  private getUserPayload(user: User): Omit<UserPrimitivesProps, 'password'> {
+    const primitives = user.toPrimitives();
+    delete primitives.password;
+    return { ...primitives };
   }
 }

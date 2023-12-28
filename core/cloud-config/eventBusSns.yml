@@ -35,6 +35,6 @@ Outputs:
     Export:
       Name: EventBusSnsCoreTopicArn
   EventBusSnsCoreTopicName:
-    Value:  ${self:custom.constants.HELLO_WORLD.SNS_TOPIC}
+    Value:  ${self:custom.constants.CORE.SNS_TOPIC}
     Export:
       Name: EventBusSnsCoreTopicName

@@ -1,4 +1,4 @@
-import { UserSigninResponse } from '@services/users/application/responses/userSigninResponse';
+import { UserAuthenticatedResponse } from '@services/users/application/responses/userAuthenticatedResponse';
 import { SigninRequest } from '@services/users/application/useCases/signin/signinRequest';
 import { UserCredentialsAreInvalidException } from '@services/users/domain/exceptions/userCredentialsAreInvalidException';
 import { UserRepository } from '@services/users/domain/repositories/userRepository';
@@ -11,7 +11,7 @@ import { UseCase } from '@shared/domain/useCases/useCase';
 import { inject, injectable } from 'tsyringe';
 
 @injectable()
-export class SigninUseCase extends UseCase<SigninRequest, UserSigninResponse> {
+export class SigninUseCase extends UseCase<SigninRequest, UserAuthenticatedResponse> {
   constructor(
     @inject('UserRepository') private repository: UserRepository,
     @inject('EncriptionService') private encriptionService: EncriptionService,
@@ -21,7 +21,7 @@ export class SigninUseCase extends UseCase<SigninRequest, UserSigninResponse> {
     super();
   }
 
-  public async run(request: SigninRequest): Promise<UserSigninResponse> {
+  public async run(request: SigninRequest): Promise<UserAuthenticatedResponse> {
     const user = await this.repository.findByUsername(UserName.build(request.username));
     if (!user) {
       throw new UserCredentialsAreInvalidException(request.username);
