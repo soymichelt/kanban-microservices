@@ -1,5 +1,7 @@
 import 'reflect-metadata';
 
+import { UserTokenService } from '@services/users/domain/services/userTokenService';
+import { JwtUserTokenService } from '@services/users/infrastructure/services/jwt/jwtUserTokenService';
 import { EventBus } from '@shared/domain/events/eventBus';
 import { Logger } from '@shared/domain/loggers/logger';
 import { EncriptionService } from '@shared/domain/services/encriptionService';
@@ -84,6 +86,14 @@ if (process.env.SMS_SENDER) {
     useValue: new SnsSmsService({
       awsRegion: process.env.REGION,
       sender: process.env.SMS_SENDER,
+    }),
+  });
+}
+
+if (process.env.JWT_PRIVATE_KEY) {
+  container.register<UserTokenService>('UserTokenService', {
+    useValue: new JwtUserTokenService({
+      privateKey: process.env.JWT_PRIVATE_KEY?.toString().trim(),
     }),
   });
 }
