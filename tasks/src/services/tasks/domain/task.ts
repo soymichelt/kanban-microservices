@@ -2,6 +2,7 @@ import { TaskCreatedEvent } from '@services/tasks/domain/events/taskCreatedEvent
 import { TaskStateUpdatedEvent } from '@services/tasks/domain/events/taskStateUpdatedEvent';
 import { TaskDescription } from '@services/tasks/domain/valueObjects/taskDescription';
 import { TaskId } from '@services/tasks/domain/valueObjects/taskId';
+import { TaskPriority, TaskPriorityEnum } from '@services/tasks/domain/valueObjects/taskPriority';
 import { TaskState } from '@services/tasks/domain/valueObjects/taskState';
 import { AggregateRoot } from '@shared/domain/aggregateRoot';
 import { DateValueObject } from '@shared/domain/valueObjects/dateValueObject';
@@ -12,6 +13,7 @@ export type TaskProps = {
   description: TaskDescription;
   state: TaskState;
   userId: UserId;
+  priority?: TaskPriority;
 
   createdAt?: DateValueObject;
   updatedAt?: DateValueObject;
@@ -22,6 +24,7 @@ export type TaskPrimitives = {
   description: string;
   state: number;
   userId: string;
+  priority?: string;
 
   createdAt: string;
   updatedAt: string;
@@ -31,6 +34,7 @@ export class Task extends AggregateRoot {
   readonly taskId: TaskId;
   readonly description: TaskDescription;
   readonly userId: UserId;
+  readonly priority?: TaskPriority;
 
   private _state: TaskState;
 
@@ -41,6 +45,7 @@ export class Task extends AggregateRoot {
     this.description = props.description;
     this._state = props.state;
     this.userId = props.userId;
+    this.priority = props.priority ?? TaskPriority.low();
 
     this.createdAt = props.createdAt ?? DateValueObject.now();
     this.updatedAt = props.updatedAt ?? DateValueObject.now();
@@ -67,6 +72,7 @@ export class Task extends AggregateRoot {
       description: TaskDescription.build(props.description),
       state: TaskState.build(props.state),
       userId: UserId.fromString(props.userId),
+      priority: props.priority ? TaskPriority.build(props.priority as TaskPriorityEnum) : undefined,
 
       createdAt: DateValueObject.fromString(props.createdAt),
       updatedAt: DateValueObject.fromString(props.updatedAt),
@@ -87,6 +93,7 @@ export class Task extends AggregateRoot {
       description: this.description.value,
       state: this._state.value,
       userId: this.userId.toString(),
+      priority: this.priority?.value,
 
       createdAt: this.createdAt.toString(),
       updatedAt: this.updatedAt.toString(),

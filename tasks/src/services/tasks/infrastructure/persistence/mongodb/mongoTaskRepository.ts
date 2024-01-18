@@ -43,6 +43,7 @@ export class MongoTaskRepository extends MongoRepository<Task> implements TaskRe
       description: document.description,
       state: Number(document.state),
       userId: document.userId,
+      priority: document.priority,
       createdAt: document.createdAt,
       updatedAt: document.updatedAt,
     });
