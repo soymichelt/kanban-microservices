@@ -1,7 +1,7 @@
 import { TaskResponse } from '@services/tasks/application/responses/taskResponse';
 import { CreateTaskRequest } from '@services/tasks/application/useCases/create/createTaskRequest';
 import { TaskRepository } from '@services/tasks/domain/repositories/taskRepository';
-import { Task, TaskPrimitives } from '@services/tasks/domain/task';
+import { Task } from '@services/tasks/domain/task';
 import { TaskDescription } from '@services/tasks/domain/valueObjects/taskDescription';
 import { TaskId } from '@services/tasks/domain/valueObjects/taskId';
 import { TaskPriority, TaskPriorityEnum } from '@services/tasks/domain/valueObjects/taskPriority';
@@ -23,7 +23,7 @@ export class CreateTaskUseCase extends UseCase<CreateTaskRequest, TaskResponse> 
     super();
   }
 
-  public async run(request: CreateTaskRequest): Promise<TaskPrimitives> {
+  public async run(request: CreateTaskRequest): Promise<TaskResponse> {
     const userId = UserId.fromString(request.userId);
     const userExist = await this.userRepository.find(userId);
     if (!userExist) {
