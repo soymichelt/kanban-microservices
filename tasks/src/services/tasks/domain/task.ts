@@ -32,23 +32,27 @@ export type TaskPrimitives = {
 
 export class Task extends AggregateRoot {
   readonly taskId: TaskId;
-  readonly description: TaskDescription;
-  readonly userId: UserId;
-  readonly priority?: TaskPriority;
 
+  private _description: TaskDescription;
+  private _userId: UserId;
+  private _priority?: TaskPriority;
   private _state: TaskState;
 
   private constructor(props: TaskProps) {
     super();
 
     this.taskId = props.taskId;
-    this.description = props.description;
+    this._description = props.description;
     this._state = props.state;
-    this.userId = props.userId;
-    this.priority = props.priority ?? TaskPriority.low();
+    this._userId = props.userId;
+    this._priority = props.priority ?? TaskPriority.low();
 
     this.createdAt = props.createdAt ?? DateValueObject.now();
     this.updatedAt = props.updatedAt ?? DateValueObject.now();
+  }
+
+  public get userId(): UserId {
+    return this._userId;
   }
 
   public get state(): TaskState {
@@ -79,6 +83,26 @@ export class Task extends AggregateRoot {
     });
   }
 
+  public update(props: Partial<Omit<TaskProps, 'taskId' | 'createdAt' | 'updatedAt'>>): void {
+    if (props.description) {
+      this._description = props.description;
+    }
+    if (props.userId) {
+      this._userId = props.userId;
+    }
+    if (props.priority) {
+      this._priority = props.priority;
+    }
+
+    if (props.state) {
+      this._state = props.state;
+      const event = TaskStateUpdatedEvent.build(this);
+      this.pushEvent(event);
+    }
+
+    this.updatedAt = DateValueObject.now();
+  }
+
   public updateState(state: TaskState): void {
     this._state = state;
     this.updatedAt = DateValueObject.now();
@@ -90,10 +114,10 @@ export class Task extends AggregateRoot {
   public toPrimitives(): TaskPrimitives {
     return {
       taskId: this.taskId.toString(),
-      description: this.description.value,
+      description: this._description.value,
       state: this._state.value,
-      userId: this.userId.toString(),
-      priority: this.priority?.value,
+      userId: this._userId.toString(),
+      priority: this._priority?.value,
 
       createdAt: this.createdAt.toString(),
       updatedAt: this.updatedAt.toString(),

@@ -22,6 +22,18 @@ task-all:
         method: GET
         path: /tasks
 
+task-update:
+  role: IamTasksLambdaAccessRole
+  handler: src/services/tasks/infrastructure/functions/http/update/handler.handler
+  environment:
+    SNS_TOPIC_ARN: !Ref EventBusSnsTasksTopic
+    MONGO_DATABASE_URI: ${ssm:/tasks/databases/MONGO_URI}
+    MONGO_DATABASE_NAME: ${ssm:/tasks/databases/MONGO_NAME}
+  events:
+    - httpApi:
+        method: PATCH
+        path: /tasks/{taskId}
+
 task-state-update:
   role: IamTasksLambdaAccessRole
   handler: src/services/tasks/infrastructure/functions/http/updateState/handler.handler
@@ -32,4 +44,4 @@ task-state-update:
   events:
     - httpApi:
         method: PATCH
-        path: /tasks/{taskId}
+        path: /tasks/state/{taskId}
